@@ -33,6 +33,7 @@ def detect_show_marker(img, gray, aruco_dict, parameters, cameraMatrix, distCoef
                 # frvec - orientation vector of the marker regarding the reference system
                 # ftvec -  position of aruco regarding the rs
                 # n_tvec - position of aruco regarding camera
+                angles0 = rotmtx_to_euler_angles(cv2.Rodrigues(frvec)[0]) # orientation aruco regarding the rs
                 n_rmat = cv2.Rodrigues(n_rvec)[0]
                 angles1 = rotmtx_to_euler_angles(n_rmat) # orientation aruco regarding camera
                 pos_cam_to_aruco = -np.matrix(n_rmat).T * np.matrix(n_tvec).T # camera position regarding aruco
