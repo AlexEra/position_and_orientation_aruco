@@ -5,18 +5,23 @@ import math
 import transforms3d
 
 
-def detect_show_marker(img, gray, aruco_dict, parameters, cameraMatrix, distCoeffs):
+def detect_show_marker(img, gray, aruco_dict, parameters, cameraMatrix,
+                       distCoeffs):
     detected_1, detected_2 = False, False
     i, j = None, None
     distance_1, distance_2 = None, None
     font = cv2.FONT_HERSHEY_SIMPLEX
-    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
+    corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict,
+                                                          parameters = parameters)
     img = aruco.drawDetectedMarkers(img, corners, ids)
     if ids is not None:
-        i = 6 # id of aruco - reference system
-        j = 5 # id of target aruco
+        i = 6  # Id of aruco - reference system.
+        j = 5  # Id of target aruco.
         for k in range(0,len(ids)):
-            rvec, tvec, markerPoints = aruco.estimatePoseSingleMarkers(corners[k], 0.045, cameraMatrix, distCoeffs)
+            rvec, tvec, markerPoints = aruco.estimatePoseSingleMarkers(corners[k],
+                                                                       0.045,
+                                                                       cameraMatrix,
+                                                                       distCoeffs)
             if ids[k] == i:
                 img = aruco.drawAxis(img, cameraMatrix, distCoeffs, rvec, tvec, 0.05)
                 c_rvec = rvec
@@ -30,24 +35,40 @@ def detect_show_marker(img, gray, aruco_dict, parameters, cameraMatrix, distCoef
                 detected_2 = True
             if (detected_1 == True) and (detected_2 == True):
                 frvec, ftvec = relatPos(c_rvec, c_tvec, n_rvec, n_tvec)
-                # frvec - orientation vector of the marker regarding the reference system
-                # ftvec -  position of aruco regarding the rs
-                # n_tvec - position of aruco regarding camera
-                angles0 = rotmtx_to_euler_angles(cv2.Rodrigues(frvec)[0]) # orientation aruco regarding the rs
+                """ frvec - orientation vector of the marker regarding the reference 
+                system.
+                ftvec -  position of aruco regarding the rs.
+                n_tvec - position of aruco regarding camera. """
+                
+                # Orientation aruco regarding the rs.
+                angles0 = rotmtx_to_euler_angles(cv2.Rodrigues(frvec)[0]) 
+                
                 n_rmat = cv2.Rodrigues(n_rvec)[0]
-                angles1 = rotmtx_to_euler_angles(n_rmat) # orientation aruco regarding camera
-                pos_cam_to_aruco = -np.matrix(n_rmat).T * np.matrix(n_tvec).T # camera position regarding aruco
+                
+                # Orientation aruco regarding camera.
+                angles1 = rotmtx_to_euler_angles(n_rmat)
+                
+                # Camera position regarding aruco.
+                pos_cam_to_aruco = -np.matrix(n_rmat).T * np.matrix(n_tvec).T
+             
                 cam_rotmtx =  np.matrix(n_rmat).T
-                angles2 = rotmtx_to_euler_angles(cam_rotmtx) # reverse orientation camera to the aruco
+                
+                # Reverse orientation camera to the aruco.
+                angles2 = rotmtx_to_euler_angles(cam_rotmtx) 
+                
                 rmat = cv2.Rodrigues(c_rvec)[0]
-                pos_cam_to_rs = -np.matrix(rmat).T * np.matrix(c_tvec).T # camera position regarding the rs
-                angles3 = rotmtx_to_euler_angles(rmat) # reverse orientation camera regarding the rs
+                
+                # Camera position regarding the rs.
+                pos_cam_to_rs = -np.matrix(rmat).T * np.matrix(c_tvec).T
+                
+                # Reverse orientation camera regarding the rs.
+                angles3 = rotmtx_to_euler_angles(rmat)
     if (distance_1 is not None):
-        cv2.putText(img, 'Id' + str(i) + ' %.2fsm' % (distance_1 * 100), (0, 64), font, 1, (0, 255, 0), 2,
-                    cv2.LINE_AA)
+        cv2.putText(img, 'Id' + str(i) + ' %.2fsm' % (distance_1 * 100), (0, 64), font, 
+                    1, (0, 255, 0), 2, cv2.LINE_AA)
     if (distance_2 is not None):
-        cv2.putText(img, 'Id' + str(j) + ' %.2fsm' % (distance_2 * 100), (0, 104), font, 1, (0, 255, 0), 2,
-                    cv2.LINE_AA)
+        cv2.putText(img, 'Id' + str(j) + ' %.2fsm' % (distance_2 * 100), (0, 104), font, 
+                    1, (0, 255, 0), 2, cv2.LINE_AA)
     return cv2.imshow('frame', img) # final img
 
 
