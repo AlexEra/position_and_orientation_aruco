@@ -12,7 +12,7 @@ def detect_show_marker(img, gray, aruco_dict, parameters, cameraMatrix,
     distance_1, distance_2 = None, None
     font = cv2.FONT_HERSHEY_SIMPLEX
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict,
-                                                          parameters = parameters)
+                                                          parameters=parameters)
     img = aruco.drawDetectedMarkers(img, corners, ids)
     if ids is not None:
         i = 6  # Id of aruco - reference system.
@@ -64,12 +64,12 @@ def detect_show_marker(img, gray, aruco_dict, parameters, cameraMatrix,
                 # Reverse orientation camera regarding the rs.
                 angles3 = rotmtx_to_euler_angles(rmat)
     if (distance_1 is not None):
-        cv2.putText(img, 'Id' + str(i) + ' %.2fsm' % (distance_1 * 100), (0, 64), font, 
+        cv2.putText(img, 'Id' + str(i) + ' %.2fsm' % (distance_1*100), (0, 64), font, 
                     1, (0, 255, 0), 2, cv2.LINE_AA)
     if (distance_2 is not None):
-        cv2.putText(img, 'Id' + str(j) + ' %.2fsm' % (distance_2 * 100), (0, 104), font, 
+        cv2.putText(img, 'Id' + str(j) + ' %.2fsm' % (distance_2*100), (0, 104), font, 
                     1, (0, 255, 0), 2, cv2.LINE_AA)
-    return cv2.imshow('frame', img) # final img
+    return cv2.imshow('frame', img)  # Final img.
 
 
 def rotmtx_to_euler_angles(R):
