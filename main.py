@@ -19,11 +19,14 @@ while(True):
     ret, img = cap.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     s_img = img
+    
     # Undistorting.
     img = undist_img(img, cameraMatrix, distCoeffs)
+    
     # Show detected marker.
     detect_show_marker(s_img, gray, aruco_dict, parameters, cameraMatrix,
                        distCoeffs)
+    
     # Press esc for close.
     if cv2.waitKey(5) == 27:
         break
