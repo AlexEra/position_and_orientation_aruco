@@ -6,6 +6,7 @@ def undist_img(img, cameraMatrix, distCoeffs):
                                                       (w, h), 1,(w, h))
     # Undistort.
     dst = cv2.undistort(img, cameraMatrix, distCoeffs, None, newcameramtx)
+    
     # Crop the image.
     x, y, w, h = roi
     dst = dst[y:y+h, x:x+w]
